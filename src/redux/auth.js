@@ -1,8 +1,8 @@
 var SpotifyWebApi = require('spotify-web-api-node');
 
-const SPOTIFY_CLIENT_ID = "4f1e242bd90741eba129ed1254ad9231"; //process.env.REACT_APP_SPOTIFY_CLIENT_ID;
-const SPOTIFY_CLIENT_SECRET = "bcda816ccb014a9397ca73df780b7f42"; //process.env.REACT_APP_SPOTIFY_CLIENT_SECRET;
-const SPOTIFY_REDIRECT_URL = "https://nowify.nickdigiulio.com/#/connect"; //process.env.REACT_APP_SSPOTIFY_REDIRECT_URL;
+const SPOTIFY_CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
+const SPOTIFY_CLIENT_SECRET = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET;
+const SPOTIFY_REDIRECT_URL = process.env.REACT_APP_SSPOTIFY_REDIRECT_URL;
 
 const SET_AUTH_URL = "SET_AUTH_URL";
 const SET_AUTH_TOKEN = "SET_AUTH_TOKEN";
