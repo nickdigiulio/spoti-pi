@@ -1,22 +1,14 @@
-var SpotifyWebApi = require('spotify-web-api-node');
-
-const SPOTIFY_CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
-const SPOTIFY_CLIENT_SECRET = process.env.REACT_APP_SPOTIFY_CLIENT_SECRET;
-const SPOTIFY_REDIRECT_URL = process.env.REACT_APP_SSPOTIFY_REDIRECT_URL;
-
 const INIT_GET_TRACK_INFO = "INIT_GET_TRACK_INFO";
 const SET_TRACK_INFO = "SET_TRACK_INFO";
 const GET_TRACK_INFO_FAILED = "GET_TRACK_INFO_FAILED";
+const SET_PLAYBACK_STATUS = "SET_PLAYBACK_STATUS";
 
 
 // Action Reducer
 const initState = {
   loading: false,
-  playStatus: "",
-  artistName: "",
-  trackName: "",
-  albumName: "",
-  albumArt: null
+  track: {},
+  isPlaying: false
 }
 
 const trackInfoReducer = (state = initState, action) => {
@@ -31,11 +23,14 @@ const trackInfoReducer = (state = initState, action) => {
       return {
         ...state,
         loading:false,
-        playStatus: action.payload.playStatus,
-        artistName: action.payload.artistName,
-        trackName: action.payload.trackName,
-        albumName: action.payload.albumName,
-        albumArt: action.payload.albumArt
+        track: {...action.payload},
+      }
+
+    case SET_PLAYBACK_STATUS:
+      return {
+        ...state,
+        loading:false,
+        isPlaying: action.payload,
       }
 
     case GET_TRACK_INFO_FAILED:
@@ -47,22 +42,25 @@ const trackInfoReducer = (state = initState, action) => {
 };
 
 export const getMyCurrentPlayingTrack = () => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({type: INIT_GET_TRACK_INFO})
-    const spotifyApi = getState().auth.spotifyApi;
-    spotifyApi.getMyCurrentPlayingTrack()
-    .then(function(data) {
-      const payload = {
-        artistName: data.body.item.artists.name,
-        trackName: data.body.name,
-        albumName: data.body.item.album.name,
-        albumArt: data.body.item.album.images[0].url
+    const intervalid = setInterval(async function(){
+      const response = await fetch('http://localhost:5050/now_playing');
+      const data = await response.json();
+
+      if ( Object.keys(data).length > 0 ) {
+        const payload = {
+          artistName: data.item.artists.name,
+          trackName: data.item.name,
+          albumName: data.item.album.name,
+          albumArt: data.item.album.images[0].url
+        }
+        dispatch({type: SET_TRACK_INFO, payload: payload});
+        dispatch({type: SET_PLAYBACK_STATUS, payload: data.is_playing});
+      } else {
+        dispatch({type: SET_PLAYBACK_STATUS, payload: false});
       }
-      dispatch({type: SET_TRACK_INFO, payload: payload})
-    }, function(err) {
-      dispatch({type: GET_TRACK_INFO_FAILED})
-      console.log('Something went wrong!', err);
-    });
+    }, 5000);
   }
 }
 

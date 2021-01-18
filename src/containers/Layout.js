@@ -1,12 +1,12 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
-import { Content } from './index'
+import { Content, PlayStatus } from './index'
 
 const Layout = () => {
 
   return (
     <div>
       <Content/>
+      <PlayStatus/>
     </div>
   )
 }
