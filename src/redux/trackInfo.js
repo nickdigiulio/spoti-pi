@@ -47,13 +47,9 @@ const trackInfoReducer = (state = initState, action) => {
 };
 
 export const getMyCurrentPlayingTrack = () => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     dispatch({type: INIT_GET_TRACK_INFO})
-    var spotifyApi = new SpotifyWebApi({
-      clientId: SPOTIFY_CLIENT_ID,
-      clientSecret: SPOTIFY_CLIENT_SECRET,
-      redirectUri: SPOTIFY_REDIRECT_URL
-    });
+    const spotifyApi = getState().auth.spotifyApi;
     spotifyApi.getMyCurrentPlayingTrack()
     .then(function(data) {
       const payload = {

@@ -38,13 +38,9 @@ const playbackStatusReducer = (state = initState, action) => {
 };
 
 export const getPlaybackState = () => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     dispatch({type: INIT_GET_PLAYBACK_STATE})
-    var spotifyApi = new SpotifyWebApi({
-      clientId: SPOTIFY_CLIENT_ID,
-      clientSecret: SPOTIFY_CLIENT_SECRET,
-      redirectUri: SPOTIFY_REDIRECT_URL
-    });
+    const spotifyApi = getState().auth.spotifyApi;
     spotifyApi.getMyCurrentPlaybackState()
       .then(function(data) {
         // Output items

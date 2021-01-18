@@ -1,9 +1,11 @@
 var SpotifyWebApi = require('spotify-web-api-node');
 
-const SPOTIFY_CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
-const SPOTIFY_REDIRECT_URL = process.env.REACT_APP_SSPOTIFY_REDIRECT_URL;
+const SPOTIFY_CLIENT_ID = "4f1e242bd90741eba129ed1254ad9231"; //process.env.REACT_APP_SPOTIFY_CLIENT_ID;
+const SPOTIFY_CLIENT_SECRET = "bcda816ccb014a9397ca73df780b7f42"; //process.env.REACT_APP_SPOTIFY_CLIENT_SECRET;
+const SPOTIFY_REDIRECT_URL = "https://nowify.nickdigiulio.com/#/connect"; //process.env.REACT_APP_SSPOTIFY_REDIRECT_URL;
 
 const SET_AUTH_URL = "SET_AUTH_URL";
+const SET_AUTH_TOKEN = "SET_AUTH_TOKEN";
 
 const initState = {
   loading: false,
@@ -45,8 +47,15 @@ export const getAuthURL = () => {
                     'user-modify-playback-state',
                     'user-read-currently-playing'];
     const state = 'some-state-of-my-choice';
+    const showDialog = true;
+    const responseType = 'token';
     // Create the authorization URL
-    var authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
+    var authorizeURL = spotifyApi.createAuthorizeURL(
+      scopes,
+      state,
+      showDialog,
+      responseType
+    );
 
     // https://accounts.spotify.com:443/authorize?client_id=5fe01282e44241328a84e7c5cc169165&response_type=code&redirect_uri=https://example.com/callback&scope=user-read-private%20user-read-email&state=some-state-of-my-choice
     console.log(authorizeURL);
@@ -56,22 +65,28 @@ export const getAuthURL = () => {
 
 export const getAuthToken = (authCode) => {
   return (dispatch, getState) => {
-    const spotifyApi = getState().auth.spotifyApi;
-    spotifyApi.authorizationCodeGrant(authCode).then(
-      function(data) {
-        console.log('The token expires in ' + data.body['expires_in']);
-        console.log('The access token is ' + data.body['access_token']);
-        console.log('The refresh token is ' + data.body['refresh_token']);
-
-        // Set the access token on the API object to use it in later calls
-        spotifyApi.setAccessToken(data.body['access_token']);
-        spotifyApi.setRefreshToken(data.body['refresh_token']);
-        dispatch({type: SET_AUTH_URL, apiObject: spotifyApi})
-      },
-      function(err) {
+    var spotifyApi = getState().auth.spotifyApi;
+    var credentials = {
+      clientId: SPOTIFY_CLIENT_ID,
+      clientSecret: SPOTIFY_CLIENT_SECRET,
+      //Either here
+      accessToken: authCode
+    };
+    var spotifyApi = new SpotifyWebApi(credentials);
+    spotifyApi.setAccessToken(authCode);
+    console.log(JSON.stringify(spotifyApi));
+    dispatch({type: SET_AUTH_TOKEN, apiObject: spotifyApi});
+    spotifyApi.getMyCurrentPlaybackState()
+      .then(function(data) {
+        // Output items
+        if (data.body && data.body.is_playing) {
+          console.log("User is currently playing something!");
+        } else {
+          console.log("User is not playing anything, or doing so in private.");
+        }
+      }, function(err) {
         console.log('Something went wrong!', err);
-      }
-    );
+      });
   }
 }
 

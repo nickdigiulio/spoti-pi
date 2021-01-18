@@ -9,7 +9,7 @@ const NowPlaying = React.lazy(() => import('./views/NowPlaying'))
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home'},
-  { path: '/connect', name: 'Maps', component: Connect },
+  { path: '/connect', name: 'Connect', component: Connect },
   { path: '/clock', exact:true, name: 'Clock', component: Clock },
   { path: '/now_playing', name: 'Now Playing', component: NowPlaying }
 ]
