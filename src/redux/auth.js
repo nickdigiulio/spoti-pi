@@ -24,7 +24,7 @@ const authReducer = (state = initState, action) => {
 export const getAuthURL = () => {
   return (dispatch) => {
     // Setting credentials can be done in the wrapper's constructor, or using the API object's setters.
-    fetch('http://localhost:5050/login')
+    fetch('https://nowify-api.nickdigiulio.com/login')
       .then((data) => {
         return data.text()
       })
