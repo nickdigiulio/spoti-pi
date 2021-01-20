@@ -1,4 +1,3 @@
-
 import React from 'react'
 
 const Connect = React.lazy(() => import('./views/Connect'))

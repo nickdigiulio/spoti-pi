@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 // routes config
@@ -73,34 +73,32 @@ class ErrorBoundary extends React.Component {
 const Content = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const bgColor = useSelector((state) => state.background.background);
   return (
-    <main className="c-main">
-      <div class="container-fluid">
-        <Suspense fallback={loading}>
-          <ErrorBoundary dispatch={dispatch} history={history}>
-            <Switch>
-              {routes.map((route, idx) => {
-                return (
-                  route.component && (
-                    <Route
-                      key={idx}
-                      path={route.path}
-                      exact={route.exact}
-                      name={route.name}
-                      render={(props) => (
-                        <div>
-                          <route.component {...props} />
-                        </div>
-                      )}
-                    />
-                  )
-                );
-              })}
-              <Redirect from="/" to="/connect" />
-            </Switch>
-          </ErrorBoundary>
-        </Suspense>
-      </div>
+    <main className="wrapper" id="background" style={{ background: bgColor }}>
+      <Suspense fallback={<h1>waiting</h1>}>
+        <ErrorBoundary dispatch={dispatch} history={history}>
+          <Switch>
+            {routes.map((route, idx) => {
+              return (
+                route.component && (
+                  <Route
+                    key={idx}
+                    path={route.path}
+                    exact={route.exact}
+                    name={route.name}
+                    render={(props) => (
+                      <route.component {...props} />
+                    )}
+                  />
+                )
+              );
+            })}
+            <Redirect from="/" to="/connect" />
+          </Switch>
+        </ErrorBoundary>
+      </Suspense>
     </main>
   );
 };

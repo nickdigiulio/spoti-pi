@@ -1,18 +1,26 @@
-import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import React, { useState, useLayoutEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { SET_BACKGROUND_COLOR, SET_FRAME_SIZE } from "../redux/background";
 var moment = require('moment');
 
 const Clock = () => {
-    const [time, setTime] = useState("");
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-    const [windowHeight, setWindowHeight] = useState(window.innerHeight);
-    const [color, setColor] = useState("");
-    const [position, setPosition] = useState({x:null,y:null});
-    const [speed, setSpeed] = useState({x:20,y:20});
+    const [time, setTime] = useState(moment().format('h:mm a'));
+    const [color, setColor] = useState("#fff");
+    const [position, setPosition] = useState({
+      x: null,
+      y: null
+    });
+    const [speed, setSpeed] = useState({
+      x: 20,
+      y: 20
+    });
 
     const isPlaying = useSelector((state) => state.trackInfo.isPlaying);
+    const windowSize = useSelector((state) => state.background.windowSize);
+
     const history = useHistory();
+    const dispatch = useDispatch();
 
     if ( isPlaying ) {
       history.push("/now_playing");
@@ -26,7 +34,7 @@ const Clock = () => {
       setColor(pickColor());
     };
 
-    const updatePositionSpeed = function () {
+    const updatePosition = function () {
       let newPosition = {
         x: position.x += speed.x,
         y: position.y += speed.y,
@@ -37,27 +45,48 @@ const Clock = () => {
 
     const checkForEdge = () => {
       let newSpeed = speed;
-      if ( position.x + 115 >= windowWidth || position.x <= 0 ) {
+      if ( position.x + 153 >= windowSize.width || position.x <= 0 ) {
         newSpeed.x = speed.x * -1;
         setSpeed(newSpeed);
         updateColor();
       }
-      if ( position.y + 75 >= windowHeight || position.y <= 0 ) {
+      if ( position.y + 75 >= windowSize.height || position.y <= 0 ) {
         newSpeed.y = speed.y * -1
         setSpeed(newSpeed);
         updateColor();
       }
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
+      // set background color
+      dispatch({type: SET_BACKGROUND_COLOR, payload: { background: "#000" }})
+      //
+      const handleResize = () => {
+        // Set window width/height to state
+        dispatch({
+          type: SET_FRAME_SIZE,
+          payload: {
+            width: window.innerWidth,
+            height: window.innerHeight
+          }
+        });
+      }
+      window.addEventListener("resize", handleResize);
+      handleResize();
       // start the time update process
       updateTime();
-      setInterval(updateTime, 1000);
+      const timeIntervalId = setInterval(updateTime, 1000);
 
       // start the time movement process
-      updatePositionSpeed();
-      setInterval(updatePositionSpeed, 80);
-    }, []);
+      updatePosition();
+      const positionIntervalId = setInterval(updatePosition, 80);
+      return () => {
+        // stop intervals
+        clearInterval(timeIntervalId);
+        clearInterval(positionIntervalId);
+        window.removeEventListener("resize", handleResize);
+      }
+    }, [dispatch]);
 
     const divStyle = {
       position: 'absolute',
@@ -67,7 +96,7 @@ const Clock = () => {
 
     return (
       <div style={divStyle}>
-          <h1 style={{color: color}}>{time}</h1>
+          <h1 className="clock" style={{color: color}}>{time}</h1>
       </div>
     )
 };

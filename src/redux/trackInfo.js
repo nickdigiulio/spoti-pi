@@ -7,7 +7,22 @@ const SET_PLAYBACK_STATUS = "SET_PLAYBACK_STATUS";
 // Action Reducer
 const initState = {
   loading: false,
-  track: {},
+  track: {
+    album: {
+      name: 'Loading',
+      images: [
+        {
+          url: '../mstile-150x150.png'
+        }
+      ]
+    },
+    name: 'Loading',
+    artists: [
+      {
+        name: 'Now'
+      }
+    ]
+  },
   isPlaying: false
 }
 
@@ -47,15 +62,8 @@ export const getMyCurrentPlayingTrack = () => {
     const intervalid = setInterval(async function(){
       const response = await fetch('http://localhost:5050/now_playing');
       const data = await response.json();
-
       if ( Object.keys(data).length > 0 ) {
-        const payload = {
-          artistName: data.item.artists.name,
-          trackName: data.item.name,
-          albumName: data.item.album.name,
-          albumArt: data.item.album.images[0].url
-        }
-        dispatch({type: SET_TRACK_INFO, payload: payload});
+        dispatch({type: SET_TRACK_INFO, payload: data.item});
         dispatch({type: SET_PLAYBACK_STATUS, payload: data.is_playing});
       } else {
         dispatch({type: SET_PLAYBACK_STATUS, payload: false});
