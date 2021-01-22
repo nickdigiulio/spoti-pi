@@ -61,7 +61,7 @@ export const getMyCurrentPlayingTrack = () => {
     dispatch({type: INIT_GET_TRACK_INFO})
     const intervalid = setInterval(async function(){
       const backendUrl = process.env.REACT_APP_ENV === 'dev' ? 'http://localhost:5050' : 'https://nowify-api.nickdigiulio.com';
-      const response = await fetch(process.env.BACKEND_URL + '/now_playing');
+      const response = await fetch(backendUrl + '/now_playing');
       const data = await response.json();
       if ( Object.keys(data).length > 0 ) {
         dispatch({type: SET_TRACK_INFO, payload: data.item});
