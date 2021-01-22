@@ -27,7 +27,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "REACT_APP_SPOTIFY_CLIENT_ID=4f1e242bd90741eba129ed1254ad9231 REACT_APP_SPOTIFY_CLIENT_SECRET=bcda816ccb014a9397ca73df780b7f42 REACT_APP_SSPOTIFY_REDIRECT_URL='https://nowify.nickdigiulio.com/' react-scripts build",
+    "build": "REACT_APP_ENV=dev react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
