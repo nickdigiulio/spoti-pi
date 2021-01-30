@@ -46,29 +46,6 @@ div#root {
 		h1.clock {
 			margin-top: 0;
 			font-size: 7em;
-			// animation: bounce 10s linear infinite;
-			// position: absolute;
-		  // -webkit-animation: moveX 4.05s linear 0s infinite alternate, moveY 4.6s linear 0s infinite alternate;
-		  // -moz-animation: moveX 4.05s linear 0s infinite alternate, moveY 4.6s linear 0s infinite alternate;
-		  // animation: moveX 4.05s linear 0s infinite alternate, moveY 4.6s linear 0s infinite alternate;
-			// @-webkit-keyframes moveX {
-			//   from { left: 0; } to { left: 90%; }
-			// }
-			// @-moz-keyframes moveX {
-			//   from { left: 0; } to { left: 90%; }
-			// }
-			// @keyframes moveX {
-			//   from { left: 0; } to { left: 90%; }
-			// }
-			// @-webkit-keyframes moveY {
-			//   from { top: 0; } to { top: 100%; }
-			// }
-			// @-moz-keyframes moveY {
-			//   from { top: 0; } to { top: 100%; }
-			// }
-			// @keyframes moveY {
-			//   from { top: 0; } to { top: 100%; }
-			// }
 		}
 
 		h1.connect {
@@ -158,4 +135,18 @@ div#root {
 	&.active {
 		display: block;
 	}
+}
+
+.clock {
+	font-size: 20vh;
+	white-space: nowrap;
+  overflow: hidden;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	line-height: 0.75;
+}
+
+main.wrapper .controls {
+	text-align: center;
 }

@@ -18,3 +18,12 @@ Buttons...
         background: lighten($spotify_green, 5%);
     }
 }
+
+#play, #pause, #next, #previous{
+  background-color: Transparent; /* Blue background */
+  border: none; /* Remove borders */
+  outline: none;
+  color: white; /* White text */
+  padding: 12px 40px; /* Some padding */
+  font-size: 10vh; /* Set a font size */
+}

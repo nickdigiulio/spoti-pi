@@ -1,20 +1,25 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { SET_BACKGROUND_COLOR, SET_FRAME_SIZE } from "../redux/background";
 var moment = require('moment');
 
 const Clock = () => {
+    const ref = useRef(null);
     const [time, setTime] = useState(moment().format('h:mm a'));
     const [color, setColor] = useState("#fff");
     const [position, setPosition] = useState({
-      x: null,
-      y: null
+      x: 0,
+      y: 0
     });
     const [speed, setSpeed] = useState({
       x: 20,
       y: 20
     });
+    const [timeSize, setTimeSize] = useState({
+      height: 0,
+      width: 0
+    })
 
     const isPlaying = useSelector((state) => state.trackInfo.isPlaying);
     const windowSize = useSelector((state) => state.background.windowSize);
@@ -45,12 +50,12 @@ const Clock = () => {
 
     const checkForEdge = () => {
       let newSpeed = speed;
-      if ( position.x + 153 >= windowSize.width || position.x <= 0 ) {
+      if ( position.x >= windowSize.width - timeSize.width || position.x <= 0 ) {
         newSpeed.x = speed.x * -1;
         setSpeed(newSpeed);
         updateColor();
       }
-      if ( position.y + 75 >= windowSize.height || position.y <= 0 ) {
+      if ( position.y >= windowSize.height - timeSize.height || position.y <= 0 ) {
         newSpeed.y = speed.y * -1
         setSpeed(newSpeed);
         updateColor();
@@ -70,6 +75,11 @@ const Clock = () => {
             height: window.innerHeight
           }
         });
+        // set the time element size
+        setTimeSize({
+          height: ref.current.offsetHeight,
+          width: ref.current.offsetWidth
+        })
       }
       window.addEventListener("resize", handleResize);
       handleResize();
@@ -80,23 +90,28 @@ const Clock = () => {
       // start the time movement process
       updatePosition();
       const positionIntervalId = setInterval(updatePosition, 80);
+
+      // stop the movement on tear down
       return () => {
         // stop intervals
         clearInterval(timeIntervalId);
         clearInterval(positionIntervalId);
         window.removeEventListener("resize", handleResize);
       }
-    }, [dispatch]);
+    }, [dispatch, ref.current]);
 
     const divStyle = {
       position: 'absolute',
       left: position.x+'px',
-      top: position.y+'px'
+      top: position.y+'px',
+      margin: 0,
+    	padding: 0,
+    	border: 0
   }
 
     return (
-      <div style={divStyle}>
-          <h1 className="clock" style={{color: color}}>{time}</h1>
+      <div className="clockWrapper" style={divStyle}>
+          <h1 ref={ref} className="clock" style={{color: color}}>{time}</h1>
       </div>
     )
 };
