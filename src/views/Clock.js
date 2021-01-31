@@ -50,12 +50,12 @@ const Clock = () => {
 
     const checkForEdge = () => {
       let newSpeed = speed;
-      if ( position.x >= windowSize.width - timeSize.width - 5 || position.x <= 0 ) {
+      if ( position.x >= windowSize.width - (timeSize.width*1.02) || position.x <= 0 ) {
         newSpeed.x = speed.x * -1;
         setSpeed(newSpeed);
         updateColor();
       }
-      if ( position.y >= windowSize.height - timeSize.height - 5 || position.y <= 0 ) {
+      if ( position.y >= windowSize.height - (timeSize.height*1.02) || position.y <= 0 ) {
         newSpeed.y = speed.y * -1
         setSpeed(newSpeed);
         updateColor();
