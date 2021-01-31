@@ -6,15 +6,15 @@ var moment = require('moment');
 
 const Clock = () => {
     const ref = useRef(null);
-    const [time, setTime] = useState(moment().format('h:mm a'));
+    const [time, setTime] = useState(moment().format('h:mm A'));
     const [color, setColor] = useState("#fff");
     const [position, setPosition] = useState({
       x: 0,
       y: 0
     });
     const [speed, setSpeed] = useState({
-      x: 20,
-      y: 20
+      x: 1,
+      y: 1
     });
     const [timeSize, setTimeSize] = useState({
       height: 0,
@@ -32,7 +32,7 @@ const Clock = () => {
     }
 
     const updateTime = function () {
-        setTime(moment().format('h:mm a'));
+        setTime(moment().format('h:mm A'));
     };
 
     const updateColor = function () {
@@ -50,12 +50,12 @@ const Clock = () => {
 
     const checkForEdge = () => {
       let newSpeed = speed;
-      if ( position.x >= windowSize.width - timeSize.width || position.x <= 0 ) {
+      if ( position.x >= windowSize.width - timeSize.width - 5 || position.x <= 0 ) {
         newSpeed.x = speed.x * -1;
         setSpeed(newSpeed);
         updateColor();
       }
-      if ( position.y >= windowSize.height - timeSize.height || position.y <= 0 ) {
+      if ( position.y >= windowSize.height - timeSize.height - 5 || position.y <= 0 ) {
         newSpeed.y = speed.y * -1
         setSpeed(newSpeed);
         updateColor();
@@ -89,7 +89,7 @@ const Clock = () => {
 
       // start the time movement process
       updatePosition();
-      const positionIntervalId = setInterval(updatePosition, 80);
+      const positionIntervalId = setInterval(updatePosition, 10);
 
       // stop the movement on tear down
       return () => {
