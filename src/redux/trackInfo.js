@@ -78,7 +78,7 @@ export const getMyCurrentPlayingTrack = () => {
               console.log("couldn't parse response");
               console.log(err);
             })
-          } else if ( response.status == 404 ) {
+          } else if ( response.status == 401 ) {
             console.log("recieved 404 while fetching track info");
             fetch(backendUrl + '/refresh')
             .then(() => {
