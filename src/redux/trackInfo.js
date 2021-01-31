@@ -79,7 +79,7 @@ export const getMyCurrentPlayingTrack = () => {
               console.log(err);
             })
           } else if ( response.status == 401 ) {
-            console.log("recieved 404 while fetching track info");
+            console.log("recieved 401 while fetching track info");
             fetch(backendUrl + '/refresh')
             .then(() => {
                 console.log("refreshed token");
