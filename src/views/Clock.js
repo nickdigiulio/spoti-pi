@@ -33,6 +33,10 @@ const Clock = () => {
 
     const updateTime = function () {
         setTime(moment().format('h:mm A'));
+        setTimeSize({
+          height: ref.current.offsetHeight,
+          width: ref.current.offsetWidth
+        })
     };
 
     const updateColor = function () {

@@ -23,7 +23,8 @@ const initState = {
       }
     ]
   },
-  isPlaying: false
+  isPlaying: false,
+  error: false
 }
 
 const trackInfoReducer = (state = initState, action) => {
@@ -39,6 +40,7 @@ const trackInfoReducer = (state = initState, action) => {
         ...state,
         loading:false,
         track: {...action.payload},
+        error: false
       }
 
     case SET_PLAYBACK_STATUS:
@@ -49,7 +51,10 @@ const trackInfoReducer = (state = initState, action) => {
       }
 
     case GET_TRACK_INFO_FAILED:
-        return initState
+        return {
+          ...state,
+          error: true
+        }
 
     default:
       return state
@@ -64,31 +69,22 @@ export const getMyCurrentPlayingTrack = () => {
     dispatch({type: INIT_GET_TRACK_INFO})
     let fetchFailed = false;
     const intervalid = setInterval(async function(){
-      const response = fetch(backendUrl + '/now_playing')
+       fetch(backendUrl + '/now_playing')
         .then((response) => {
-          if ( response.status == 200 ) {
-            response.json().then((data) => {
-              if ( Object.keys(data).length > 0 ) {
-                dispatch({type: SET_TRACK_INFO, payload: data.item});
-                dispatch({type: SET_PLAYBACK_STATUS, payload: data.is_playing});
-              } else {
-                dispatch({type: SET_PLAYBACK_STATUS, payload: false});
-              }
-            }).catch((err) => {
-              console.log("couldn't parse response");
-              console.log(err);
-            })
-          } else if ( response.status == 401 ) {
-            console.log("recieved 401 while fetching track info");
-            fetch(backendUrl + '/refresh')
-            .then(() => {
-                console.log("refreshed token");
-            }).catch((err) => {
-              console.log("couldn't refresh token: "+err);
-            })
-          }
+          response.json().then((data) => {
+            if ( Object.keys(data).length > 0 ) {
+              dispatch({type: SET_TRACK_INFO, payload: data.item});
+              dispatch({type: SET_PLAYBACK_STATUS, payload: data.is_playing});
+            } else {
+              dispatch({type: SET_PLAYBACK_STATUS, payload: false});
+            }
+          }).catch((err) => {
+            console.log("couldn't parse response");
+            console.log(err);
+          })
         }).catch((err) => {
           console.log(err);
+          dispatch({type: GET_TRACK_INFO_FAILED});
         })
     }, 2000);
     if ( fetchFailed ) {
@@ -102,7 +98,7 @@ export const getMyCurrentPlayingTrack = () => {
 export const trackAction = (action) => {
   return (dispatch) => {
     console.log("action: "+action);
-    const response = fetch(backendUrl + '/' + action)
+    fetch(backendUrl + '/' + action)
       .then((response) => {
         response.json()
           .then((data) => {

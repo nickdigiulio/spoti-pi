@@ -6,11 +6,11 @@ import { useHistory } from "react-router-dom";
 // routes config
 import routes from "../routes";
 
-const loading = (
-  <div className="pt-3 text-center">
-    <div className="sk-spinner sk-spinner-pulse"></div>
-  </div>
-);
+// const loading = (
+//   <div className="pt-3 text-center">
+//     <div className="sk-spinner sk-spinner-pulse"></div>
+//   </div>
+// );
 
 // There is not a React hook equivalent of componentDidCatch()
 // which is why Class component is being used instead of functional component

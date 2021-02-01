@@ -47,11 +47,15 @@ const NowPlaying = () => {
       <ReactLoading
         className="tmp"
         type={"spin"}
-        color={"#000"}
+        color={"#ffff"}
         height={60}
         width={60}
       />
     )
+  }
+
+  if ( trackData.error ) {
+    history.push("/connect");
   }
 
   const img = trackData.album.images[0].url;
